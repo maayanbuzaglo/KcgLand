@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.http.legacy">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../AndroidSDK/platforms/android-28/optional/org.apache.http.legacy.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../platforms/android-28/optional/org.apache.http.legacy.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
