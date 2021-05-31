@@ -10,6 +10,7 @@ or at least the main managment
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.dji.sdk.sample.demo.gimbal.MoveGimbalWithSpeedView;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 
 import java.text.DateFormat;
@@ -146,6 +147,11 @@ public class Controller {
         planesLog.closeLog();
 
         drone.finish();
+    }
+
+    public FPVControll getDrone()
+    {
+        return this.drone;
     }
 
 

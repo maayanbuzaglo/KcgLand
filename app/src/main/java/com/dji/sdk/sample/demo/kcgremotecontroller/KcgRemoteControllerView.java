@@ -22,10 +22,13 @@
     import androidx.appcompat.app.AlertDialog;
 
     import com.dji.sdk.sample.R;
+    import com.dji.sdk.sample.demo.gimbal.MoveGimbalWithSpeedView;
     import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
     import com.dji.sdk.sample.internal.utils.ToastUtils;
     import com.dji.sdk.sample.internal.view.PresentableView;
 
+
+    import java.util.Timer;
 
     import dji.common.error.DJIError;
     import dji.common.flightcontroller.simulator.InitializationData;
@@ -56,6 +59,7 @@
         private Button btnDisableVirtualStick;
         private Button btnStart;
         private Button btnLand;
+        private Button btnMoveCamera; //Added-------------------------------------------
 
         // Codec for video live view
         protected DJICodecManager mCodecManager = null;
@@ -74,6 +78,25 @@
 
         private Controller cont;
         private float p = 0.5f, i = 0.02f, d = 0.01f, max_i = 1, t = -0.6f;//t fot vertical throttle
+
+
+        //Added---------------------------------------------------------------------------
+        private Timer timer;
+        private MoveGimbalWithSpeedView.GimbalRotateTimerTask gimbalRotationTimerTask;
+        //This function moves the camera ten degrees per second.
+        public void moveCameraBtnClick()
+        {
+            //while (true)
+//
+                timer = new Timer();
+                gimbalRotationTimerTask = new MoveGimbalWithSpeedView.GimbalRotateTimerTask(0);
+                gimbalRotationTimerTask.setDrone(cont.getDrone());
+//            timer.schedule(gimbalRotationTimerTask, 0, 100);
+                gimbalRotationTimerTask.run();
+//
+        }
+        //--------------------------------------------------------------------------------
+
 
         public KcgRemoteControllerView(Context context) {
             super(context);
@@ -157,11 +180,13 @@
         btnDisableVirtualStick = findViewById(R.id.stop_btn);
         btnStart = findViewById(R.id.hover_btn);
         btnLand = findViewById(R.id.land_btn);
-
+        btnMoveCamera = findViewById(R.id.move_camera); //Added-------------------------------------------
 
         btnDisableVirtualStick.setOnClickListener(this);
         btnStart.setOnClickListener(this);
         btnLand.setOnClickListener(this);
+        btnMoveCamera.setOnClickListener(this); //Added-------------------------------------------
+
         if (null != mVideoSurface) {
             mVideoSurface.setSurfaceTextureListener(this);
         }
@@ -475,7 +500,10 @@
                     autonomous_mode_txt.setText("autonomous");
                     autonomous_mode_txt.setTextColor(Color.rgb(0, 255, 0));
                     break;
-
+ //Added-------------------------------------------------------------------------------------
+                case R.id.move_camera:
+                    moveCameraBtnClick();
+                    break;
                 //--------- set vertical throttle
                 case R.id.t_minus_btn:
                     try {

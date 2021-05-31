@@ -154,8 +154,16 @@ public class ImageCoordinates {
         return arucoIDs;
     }
 
-
-
+//Added------------------------------------------------------------------------------
+    private static final double KNOWN_DISTANCE = 24;
+    private static final double KNOWN_WIDTH = 11.0;
+    //This function compute the distance between the drone and the target.
+    public double distanceFromTarget(Mat image)
+    {
+        double perWidth = image.width();
+        double focalLength = (image.width() * KNOWN_DISTANCE) / KNOWN_WIDTH;
+        return (KNOWN_WIDTH * focalLength) / perWidth;
+    }
 }
 
 

@@ -2,6 +2,7 @@ package com.dji.sdk.sample.demo.gimbal;
 
 import android.content.Context;
 import com.dji.sdk.sample.R;
+import com.dji.sdk.sample.demo.kcgremotecontroller.FPVControll;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 import com.dji.sdk.sample.internal.view.BaseThreeBtnView;
 import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
@@ -16,8 +17,10 @@ import java.util.TimerTask;
  * Class for moving gimbal with speed.
  */
 public class MoveGimbalWithSpeedView extends BaseThreeBtnView {
-    private Timer timer;
-    private GimbalRotateTimerTask gimbalRotationTimerTask;
+    public Timer timer;
+    public GimbalRotateTimerTask gimbalRotationTimerTask;
+
+    public static float height = 0;
 
     public MoveGimbalWithSpeedView(Context context) {
         super(context);
@@ -76,7 +79,7 @@ public class MoveGimbalWithSpeedView extends BaseThreeBtnView {
         }
     }
     @Override
-    protected void onDetachedFromWindow() {
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (timer != null) {
             if(gimbalRotationTimerTask != null) {
@@ -103,30 +106,46 @@ public class MoveGimbalWithSpeedView extends BaseThreeBtnView {
         return R.string.gimbal_listview_rotate_gimbal;
     }
 
-    private static class GimbalRotateTimerTask extends TimerTask {
+    public static class GimbalRotateTimerTask extends TimerTask {
         float pitchValue;
+        FPVControll drone;
 
-        GimbalRotateTimerTask(float pitchValue) {
+        public GimbalRotateTimerTask(float pitchValue) {
             super();
             this.pitchValue = pitchValue;
         }
 
+        public void setDrone(FPVControll drone)
+        {
+            this.drone = drone;
+        }
+
         @Override
-        public void run() {
-            if (ModuleVerificationUtil.isGimbalModuleAvailable()) {
-                DJISampleApplication.getProductInstance().getGimbal().
-                    rotate(new Rotation.Builder().pitch(pitchValue)
-                                                 .mode(RotationMode.SPEED)
-                                                 .yaw(Rotation.NO_ROTATION)
-                                                 .roll(Rotation.NO_ROTATION)
-                                                 .time(0)
-                                                 .build(), new CommonCallbacks.CompletionCallback() {
+        public void run()
+        {
+            if (ModuleVerificationUtil.isGimbalModuleAvailable())
+            {
+                height = height + 0.6F; //this.drone.getAlt();
+                if (height > 1)  pitchValue = 90 * 2;
+                else
+                {
+                    pitchValue = -90 * 2;
+                    height = 1.5F;
+                }
 
-                        @Override
-                        public void onResult(DJIError error) {
+                    DJISampleApplication.getProductInstance().getGimbal().
+                            rotate(new Rotation.Builder().pitch(pitchValue)
+                                    .mode(RotationMode.SPEED)
+                                    .yaw(Rotation.NO_ROTATION)
+                                    .roll(Rotation.NO_ROTATION)
+                                    .time(0)
+                                    .build(), new CommonCallbacks.CompletionCallback() {
 
-                        }
-                    });
+                                @Override
+                                public void onResult(DJIError error) {
+
+                                }
+                            });
             }
         }
     }
